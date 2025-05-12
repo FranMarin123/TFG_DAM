@@ -1,4 +1,4 @@
-package com.francisco.github;
+package com.francisco.servly;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
