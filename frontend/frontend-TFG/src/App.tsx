@@ -1,24 +1,19 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import './App.css';
-import type { JSX } from 'react';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import HomePage from "./pages/home/home-page"
+import LoginPage from "./pages/auth/login/login-page"
+import RegisterPage from "./pages/auth/register/register-page"
 
-const App: React.FC = (): JSX.Element => {
+function App() {
   return (
     <Router>
-      <Header />
-      <main className="container">
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-        </Routes>
-      </main>
-      <Footer />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        {/* Add more routes as needed */}
+      </Routes>
     </Router>
-  );
+  )
 }
 
-export default App;
+export default App
