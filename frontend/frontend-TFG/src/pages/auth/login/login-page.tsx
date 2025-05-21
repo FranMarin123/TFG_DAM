@@ -1,4 +1,4 @@
-import { LoginForm } from "./login-form"
+import { LoginForm } from "../../../components/auth/login-form"
 import { Link } from "react-router-dom"
 import { Header } from "../../../components/layout/header"
 import { Footer } from "../../../components/layout/footer"

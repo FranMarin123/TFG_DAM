@@ -25,7 +25,7 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="text-gray-700 hover:text-sky-600 font-medium flex items-center">
+            <Link to="/servers" className="text-gray-700 hover:text-sky-600 font-medium flex items-center">
               <FiServer className="mr-2" /> Servidores
             </Link>
             <Link to="/monitoring" className="text-gray-700 hover:text-sky-600 font-medium flex items-center">
@@ -71,7 +71,7 @@ export function Header() {
         <div className="md:hidden bg-white border-t border-gray-200 py-2">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-1 py-3">
             <Link
-              to="/"
+              to="/servers"
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50 flex items-center"
               onClick={() => setIsMenuOpen(false)}
             >

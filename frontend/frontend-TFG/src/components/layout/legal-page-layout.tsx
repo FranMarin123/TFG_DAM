@@ -1,6 +1,6 @@
 import type React from "react"
-import { Header } from "../../components/layout/header"
-import { Footer } from "../../components/layout/footer"
+import { Header } from "./header"
+import { Footer } from "./footer"
 
 interface LegalPageLayoutProps {
   title: string
