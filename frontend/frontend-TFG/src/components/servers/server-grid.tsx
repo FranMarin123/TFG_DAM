@@ -1,7 +1,12 @@
+"use client"
+
 import { FiEdit2, FiTrash2, FiCpu, FiHardDrive, FiWifi } from "react-icons/fi"
 import { ServerStatusBadge } from "./server-status-badge"
 import { Card, CardHeader, CardContent, CardFooter } from "../ui/card"
 import { Button } from "../ui/button"
+
+// First, import useNavigate from react-router-dom
+import { useNavigate } from "react-router-dom"
 
 interface Server {
   id: string
@@ -24,6 +29,14 @@ interface ServerGridProps {
 }
 
 export function ServerGrid({ servers, onEdit, onDelete, onRestart }: ServerGridProps) {
+  // Inside the ServerGrid function, add the navigate hook
+  const navigate = useNavigate()
+
+  // Add a handleCardClick function
+  const handleCardClick = (serverId: string) => {
+    navigate(`/servers/${serverId}`)
+  }
+
   if (servers.length === 0) {
     return (
       <div className="flex h-64 items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-white p-12 text-center">
@@ -38,7 +51,11 @@ export function ServerGrid({ servers, onEdit, onDelete, onRestart }: ServerGridP
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {servers.map((server) => (
-        <Card key={server.id} className="h-full">
+        <Card
+          key={server.id}
+          className="h-full cursor-pointer transition-shadow hover:shadow-md"
+          onClick={() => handleCardClick(server.id)}
+        >
           <CardHeader className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <h3 className="text-lg font-medium">{server.name}</h3>
@@ -46,14 +63,20 @@ export function ServerGrid({ servers, onEdit, onDelete, onRestart }: ServerGridP
             </div>
             <div className="flex space-x-1">
               <button
-                onClick={() => onEdit(server)}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onEdit(server)
+                }}
                 className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-sky-600"
                 title="Editar"
               >
                 <FiEdit2 className="h-4 w-4" />
               </button>
               <button
-                onClick={() => onDelete(server)}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onDelete(server)
+                }}
                 className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-red-600"
                 title="Eliminar"
               >
@@ -106,7 +129,10 @@ export function ServerGrid({ servers, onEdit, onDelete, onRestart }: ServerGridP
             <Button
               variant={server.status === "offline" ? "primary" : "secondary"}
               size="sm"
-              onClick={() => onRestart(server)}
+              onClick={(e) => {
+                e.stopPropagation()
+                onRestart(server)
+              }}
               disabled={server.status === "restarting"}
             >
               {server.status === "offline"

@@ -7,6 +7,7 @@ import TermsOfServicePage from "./pages/legal/terms-of-service-page"
 import CookiePolicyPage from "./pages/legal/cookie-policy-page"
 import AboutUsPage from "./pages/about-us/about-us-page"
 import ServersPage from "./pages/server/servers-page"
+import ServerDetailPage from "./pages/server/server-detail-page"
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/cookies" element={<CookiePolicyPage />} />
         <Route path="/about" element={<AboutUsPage />} />
         <Route path="/servers" element={<ServersPage />} />
+        <Route path="/servers/:id" element={<ServerDetailPage />} />
       </Routes>
     </Router>
   )
