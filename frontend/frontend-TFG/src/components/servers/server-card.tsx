@@ -1,9 +1,10 @@
-"use client"
+import type React from "react"
 
 import { FiCpu, FiHardDrive, FiWifi, FiMoreVertical } from "react-icons/fi"
 import { Card, CardHeader, CardContent, CardFooter } from "../ui/card"
 import { ServerStatusBadge } from "./server-status-badge"
 import { Button } from "../ui/button"
+import { useNavigate } from "react-router-dom"
 
 interface ServerCardProps {
   server: {
@@ -16,19 +17,36 @@ interface ServerCardProps {
     memory: number
     disk: number
   }
-  onViewDetails: (id: string) => void
-  onRestart: (id: string) => void
+  onEdit: (server: any) => void
+  onDelete: (server: any) => void
+  onRestart: (server: any) => void
 }
 
-export function ServerCard({ server, onViewDetails, onRestart }: ServerCardProps) {
+export function ServerCard({ server, onEdit, onDelete, onRestart }: ServerCardProps) {
+  const navigate = useNavigate()
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    // Prevent navigation if clicking on action buttons
+    if ((e.target as HTMLElement).closest("button")) {
+      return
+    }
+    navigate(`/servers/${server.id}`)
+  }
+
   return (
-    <Card className="h-full">
+    <Card className="h-full cursor-pointer transition-shadow hover:shadow-md" onClick={handleCardClick}>
       <CardHeader className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <h3 className="text-lg font-medium">{server.name}</h3>
           <ServerStatusBadge status={server.status} />
         </div>
-        <button className="text-gray-500 hover:text-gray-700">
+        <button
+          className="text-gray-500 hover:text-gray-700"
+          onClick={(e) => {
+            e.stopPropagation()
+            // Show dropdown menu (not implemented)
+          }}
+        >
           <FiMoreVertical />
         </button>
       </CardHeader>
@@ -76,13 +94,23 @@ export function ServerCard({ server, onViewDetails, onRestart }: ServerCardProps
         </div>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button variant="outline" size="sm" onClick={() => onViewDetails(server.id)}>
-          Ver detalles
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={(e) => {
+            e.stopPropagation()
+            onEdit(server)
+          }}
+        >
+          Editar
         </Button>
         <Button
           variant={server.status === "offline" ? "primary" : "secondary"}
           size="sm"
-          onClick={() => onRestart(server.id)}
+          onClick={(e) => {
+            e.stopPropagation()
+            onRestart(server)
+          }}
           disabled={server.status === "restarting"}
         >
           {server.status === "offline" ? "Iniciar" : server.status === "restarting" ? "Reiniciando..." : "Reiniciar"}

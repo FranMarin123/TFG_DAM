@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { FiEdit2, FiTrash2, FiSearch, FiRefreshCw } from "react-icons/fi"
 import { ServerStatusBadge } from "./server-status-badge"
+import { useNavigate } from "react-router-dom"
 
 interface Server {
   id: string
@@ -26,6 +27,7 @@ export function ServerTable({ servers, onEdit, onDelete, onRestart }: ServerTabl
   const [searchTerm, setSearchTerm] = useState("")
   const [sortField, setSortField] = useState<keyof Server>("name")
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
+  const navigate = useNavigate()
 
   const handleSort = (field: keyof Server) => {
     if (sortField === field) {
@@ -52,6 +54,10 @@ export function ServerTable({ servers, onEdit, onDelete, onRestart }: ServerTabl
     }
     return 0
   })
+
+  const handleRowClick = (server: Server) => {
+    navigate(`/servers/${server.id}`)
+  }
 
   return (
     <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
@@ -138,7 +144,7 @@ export function ServerTable({ servers, onEdit, onDelete, onRestart }: ServerTabl
           <tbody className="divide-y divide-gray-200 bg-white">
             {sortedServers.length > 0 ? (
               sortedServers.map((server) => (
-                <tr key={server.id} className="hover:bg-gray-50">
+                <tr key={server.id} className="cursor-pointer hover:bg-gray-50" onClick={() => handleRowClick(server)}>
                   <td className="whitespace-nowrap px-6 py-4">
                     <div className="text-sm font-medium text-gray-900">{server.name}</div>
                     <div className="text-sm text-gray-500">{server.os}</div>
@@ -154,21 +160,30 @@ export function ServerTable({ servers, onEdit, onDelete, onRestart }: ServerTabl
                   <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
                     <div className="flex justify-end space-x-2">
                       <button
-                        onClick={() => onRestart(server)}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onRestart(server)
+                        }}
                         className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-sky-600"
                         title="Reiniciar"
                       >
                         <FiRefreshCw className="h-5 w-5" />
                       </button>
                       <button
-                        onClick={() => onEdit(server)}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onEdit(server)
+                        }}
                         className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-sky-600"
                         title="Editar"
                       >
                         <FiEdit2 className="h-5 w-5" />
                       </button>
                       <button
-                        onClick={() => onDelete(server)}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onDelete(server)
+                        }}
                         className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-red-600"
                         title="Eliminar"
                       >
