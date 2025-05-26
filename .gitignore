@@ -1,5 +1,7 @@
 # ========== BACKEND (Spring Boot - Java) ==========
 
+/backend/servly/src/main/resources/application.properties
+
 # Maven
 target/
 pom.xml.tag
@@ -55,7 +57,7 @@ dist/
 
 # Vite config
 vite.config.js
-vite.config.ts
+# vite.config.ts
 
 # VS Code config
 .vscode/
