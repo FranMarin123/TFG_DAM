@@ -1,11 +1,21 @@
 package com.francisco.servly.model;
 
+import jakarta.persistence.*;
+
 import java.util.Objects;
 
+@Entity
 public class Script {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private String title;
     private String content;
+
+    @ManyToOne
+    @JoinColumn(name = "server_id", nullable = false)
     private Server server;
 
     public Script(String title, String content) {
@@ -19,6 +29,10 @@ public class Script {
         this.title = title;
         this.content = content;
         this.server = server;
+    }
+
+    public Script() {
+
     }
 
     public int getId() {
