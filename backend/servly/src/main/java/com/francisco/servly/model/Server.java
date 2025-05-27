@@ -1,16 +1,36 @@
 package com.francisco.servly.model;
 
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
 public class Server {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private String name;
     private String address;
     private int port;
     private String type;
+
+    @ManyToMany
+    @JoinTable(
+            name = "server_user",
+            joinColumns = @JoinColumn(name = "server_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
     private List<User> users;
+
+    @OneToMany(mappedBy = "server", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Script> scripts;
+
+    @OneToMany(mappedBy = "server", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Report> reports;
 
     public Server(String name, String address, int port, String type) {
         this.id = -1;
@@ -19,15 +39,23 @@ public class Server {
         this.port = port;
         this.type = type;
         this.users = new ArrayList<>();
+        this.scripts = new ArrayList<>();
+        this.reports = new ArrayList<>();
     }
 
-    public Server(int id, String name, String address, int port, String type, List<User> users) {
+    public Server(int id, String name, String address, int port, String type, List<User> users, List<Script> scripts, List<Report> reports) {
         this.id = id;
         this.name = name;
         this.address = address;
         this.port = port;
         this.type = type;
         this.users = users;
+        this.scripts = scripts;
+        this.reports = reports;
+    }
+
+    public Server() {
+
     }
 
     public int getId() {
@@ -76,6 +104,22 @@ public class Server {
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+
+    public List<Script> getScripts() {
+        return scripts;
+    }
+
+    public void setScripts(List<Script> scripts) {
+        this.scripts = scripts;
+    }
+
+    public List<Report> getReports() {
+        return reports;
+    }
+
+    public void setReports(List<Report> reports) {
+        this.reports = reports;
     }
 
     @Override

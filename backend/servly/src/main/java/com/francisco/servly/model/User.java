@@ -1,14 +1,22 @@
 package com.francisco.servly.model;
 
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
 public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
     private String email;
     private String password;
+
+    @ManyToMany(mappedBy = "users")
     private List<Server> servers;
 
     public User(String name, String email, String password) {
@@ -25,6 +33,10 @@ public class User {
         this.email = email;
         this.password = password;
         this.servers = servers;
+    }
+
+    public User() {
+
     }
 
     public int getId() {

@@ -1,15 +1,24 @@
 package com.francisco.servly.model;
 
+import jakarta.persistence.*;
+
 import java.time.LocalTime;
 import java.util.Objects;
 
+@Entity
 public class Report {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private LocalTime time;
     private String status;
     private int cpuPercent;
     private int ramPercent;
     private int diskPercent;
+
+    @ManyToOne
+    @JoinColumn(name = "server_id", nullable = false)
     private Server server;
 
     public Report(LocalTime time, String status, int cpuPercent, int ramPercent, int diskPercent, Server server) {
@@ -29,6 +38,10 @@ public class Report {
         this.ramPercent = ramPercent;
         this.diskPercent = diskPercent;
         this.server = server;
+    }
+
+    public Report() {
+
     }
 
     public int getId() {
