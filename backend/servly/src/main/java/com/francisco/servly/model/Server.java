@@ -1,5 +1,6 @@
 package com.francisco.servly.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -24,12 +25,15 @@ public class Server {
             joinColumns = @JoinColumn(name = "server_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
+    @JsonIgnore
     private List<User> users;
 
     @OneToMany(mappedBy = "server", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Script> scripts;
 
     @OneToMany(mappedBy = "server", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Report> reports;
 
     public Server(String name, String address, int port, String type) {

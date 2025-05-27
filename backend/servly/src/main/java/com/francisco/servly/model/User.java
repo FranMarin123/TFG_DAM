@@ -1,5 +1,6 @@
 package com.francisco.servly.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class User {
     private String password;
 
     @ManyToMany(mappedBy = "users")
+    @JsonIgnore
     private List<Server> servers;
 
     public User(String name, String email, String password) {
