@@ -1,5 +1,6 @@
 package com.francisco.servly.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalTime;
@@ -19,6 +20,7 @@ public class Report {
 
     @ManyToOne
     @JoinColumn(name = "server_id", nullable = false)
+    @JsonIgnore
     private Server server;
 
     public Report(LocalTime time, String status, int cpuPercent, int ramPercent, int diskPercent, Server server) {
