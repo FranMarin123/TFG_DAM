@@ -1,5 +1,3 @@
-"use client"
-
 import type React from "react"
 import { useState, useEffect } from "react"
 import { FiServer, FiGlobe, FiCpu, FiHardDrive } from "react-icons/fi"
@@ -38,6 +36,7 @@ export function ServerForm({ server, onSubmit, onCancel }: ServerFormProps) {
   })
 
   const [errors, setErrors] = useState<Partial<Record<keyof ServerFormData, string>>>({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
     if (server) {
@@ -52,6 +51,7 @@ export function ServerForm({ server, onSubmit, onCancel }: ServerFormProps) {
       [name]: type === "number" ? Number.parseFloat(value) : value,
     }))
 
+    // Clear error when field is edited
     if (errors[name as keyof ServerFormData]) {
       setErrors((prev) => ({
         ...prev,
@@ -93,11 +93,22 @@ export function ServerForm({ server, onSubmit, onCancel }: ServerFormProps) {
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (validate()) {
-      onSubmit(formData)
+    if (!validate()) {
+      return
+    }
+
+    setIsSubmitting(true)
+
+    try {
+      await onSubmit(formData)
+    } catch (error) {
+      console.error("Error submitting form:", error)
+      // Error handling is done in the parent component
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -105,7 +116,7 @@ export function ServerForm({ server, onSubmit, onCancel }: ServerFormProps) {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-          Nombre del servidor
+          Nombre del servidor *
         </label>
         <div className="relative mt-1">
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -117,9 +128,10 @@ export function ServerForm({ server, onSubmit, onCancel }: ServerFormProps) {
             name="name"
             value={formData.name}
             onChange={handleChange}
+            disabled={isSubmitting}
             className={`block w-full rounded-md border ${
               errors.name ? "border-red-500" : "border-gray-300"
-            } pl-10 py-2 focus:border-sky-500 focus:ring-sky-500 sm:text-sm`}
+            } pl-10 py-2 focus:border-sky-500 focus:ring-sky-500 sm:text-sm disabled:bg-gray-100 disabled:cursor-not-allowed`}
             placeholder="Servidor Web Principal"
           />
         </div>
@@ -128,7 +140,7 @@ export function ServerForm({ server, onSubmit, onCancel }: ServerFormProps) {
 
       <div>
         <label htmlFor="ip" className="block text-sm font-medium text-gray-700">
-          Dirección IP
+          Dirección IP *
         </label>
         <div className="relative mt-1">
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -140,13 +152,35 @@ export function ServerForm({ server, onSubmit, onCancel }: ServerFormProps) {
             name="ip"
             value={formData.ip}
             onChange={handleChange}
+            disabled={isSubmitting}
             className={`block w-full rounded-md border ${
               errors.ip ? "border-red-500" : "border-gray-300"
-            } pl-10 py-2 focus:border-sky-500 focus:ring-sky-500 sm:text-sm`}
+            } pl-10 py-2 focus:border-sky-500 focus:ring-sky-500 sm:text-sm disabled:bg-gray-100 disabled:cursor-not-allowed`}
             placeholder="192.168.1.1"
           />
         </div>
         {errors.ip && <p className="mt-1 text-sm text-red-600">{errors.ip}</p>}
+      </div>
+
+      <div>
+        <label htmlFor="type" className="block text-sm font-medium text-gray-700">
+          Tipo de servidor *
+        </label>
+        <select
+          id="type"
+          name="type"
+          value={formData.type}
+          onChange={handleChange}
+          disabled={isSubmitting}
+          className="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 focus:border-sky-500 focus:ring-sky-500 sm:text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
+        >
+          <option value="virtual">Virtual</option>
+          <option value="physical">Físico</option>
+          <option value="cloud">Cloud</option>
+          <option value="web">Web Server</option>
+          <option value="database">Database Server</option>
+          <option value="application">Application Server</option>
+        </select>
       </div>
 
       <div>
@@ -159,49 +193,32 @@ export function ServerForm({ server, onSubmit, onCancel }: ServerFormProps) {
           name="location"
           value={formData.location}
           onChange={handleChange}
+          disabled={isSubmitting}
           className={`mt-1 block w-full rounded-md border ${
             errors.location ? "border-red-500" : "border-gray-300"
-          } py-2 px-3 focus:border-sky-500 focus:ring-sky-500 sm:text-sm`}
+          } py-2 px-3 focus:border-sky-500 focus:ring-sky-500 sm:text-sm disabled:bg-gray-100 disabled:cursor-not-allowed`}
           placeholder="Madrid, España"
         />
         {errors.location && <p className="mt-1 text-sm text-red-600">{errors.location}</p>}
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label htmlFor="type" className="block text-sm font-medium text-gray-700">
-            Tipo
-          </label>
-          <select
-            id="type"
-            name="type"
-            value={formData.type}
-            onChange={handleChange}
-            className="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 focus:border-sky-500 focus:ring-sky-500 sm:text-sm"
-          >
-            <option value="virtual">Virtual</option>
-            <option value="physical">Físico</option>
-            <option value="cloud">Cloud</option>
-          </select>
-        </div>
-
-        <div>
-          <label htmlFor="os" className="block text-sm font-medium text-gray-700">
-            Sistema Operativo
-          </label>
-          <select
-            id="os"
-            name="os"
-            value={formData.os}
-            onChange={handleChange}
-            className="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 focus:border-sky-500 focus:ring-sky-500 sm:text-sm"
-          >
-            <option value="linux">Linux</option>
-            <option value="windows">Windows</option>
-            <option value="macos">macOS</option>
-            <option value="other">Otro</option>
-          </select>
-        </div>
+      <div>
+        <label htmlFor="os" className="block text-sm font-medium text-gray-700">
+          Sistema Operativo
+        </label>
+        <select
+          id="os"
+          name="os"
+          value={formData.os}
+          onChange={handleChange}
+          disabled={isSubmitting}
+          className="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 focus:border-sky-500 focus:ring-sky-500 sm:text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
+        >
+          <option value="linux">Linux</option>
+          <option value="windows">Windows</option>
+          <option value="macos">macOS</option>
+          <option value="other">Otro</option>
+        </select>
       </div>
 
       <div className="grid grid-cols-3 gap-4">
@@ -220,9 +237,10 @@ export function ServerForm({ server, onSubmit, onCancel }: ServerFormProps) {
               min="1"
               value={formData.cpu}
               onChange={handleChange}
+              disabled={isSubmitting}
               className={`block w-full rounded-md border ${
                 errors.cpu ? "border-red-500" : "border-gray-300"
-              } pl-10 py-2 focus:border-sky-500 focus:ring-sky-500 sm:text-sm`}
+              } pl-10 py-2 focus:border-sky-500 focus:ring-sky-500 sm:text-sm disabled:bg-gray-100 disabled:cursor-not-allowed`}
             />
           </div>
           {errors.cpu && <p className="mt-1 text-sm text-red-600">{errors.cpu}</p>}
@@ -243,9 +261,10 @@ export function ServerForm({ server, onSubmit, onCancel }: ServerFormProps) {
               min="1"
               value={formData.memory}
               onChange={handleChange}
+              disabled={isSubmitting}
               className={`block w-full rounded-md border ${
                 errors.memory ? "border-red-500" : "border-gray-300"
-              } pl-10 py-2 focus:border-sky-500 focus:ring-sky-500 sm:text-sm`}
+              } pl-10 py-2 focus:border-sky-500 focus:ring-sky-500 sm:text-sm disabled:bg-gray-100 disabled:cursor-not-allowed`}
             />
           </div>
           {errors.memory && <p className="mt-1 text-sm text-red-600">{errors.memory}</p>}
@@ -266,39 +285,55 @@ export function ServerForm({ server, onSubmit, onCancel }: ServerFormProps) {
               min="1"
               value={formData.disk}
               onChange={handleChange}
+              disabled={isSubmitting}
               className={`block w-full rounded-md border ${
                 errors.disk ? "border-red-500" : "border-gray-300"
-              } pl-10 py-2 focus:border-sky-500 focus:ring-sky-500 sm:text-sm`}
+              } pl-10 py-2 focus:border-sky-500 focus:ring-sky-500 sm:text-sm disabled:bg-gray-100 disabled:cursor-not-allowed`}
             />
           </div>
           {errors.disk && <p className="mt-1 text-sm text-red-600">{errors.disk}</p>}
         </div>
       </div>
 
-      <div>
-        <label htmlFor="status" className="block text-sm font-medium text-gray-700">
-          Estado
-        </label>
-        <select
-          id="status"
-          name="status"
-          value={formData.status}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 focus:border-sky-500 focus:ring-sky-500 sm:text-sm"
-        >
-          <option value="online">En línea</option>
-          <option value="offline">Desconectado</option>
-          <option value="maintenance">Mantenimiento</option>
-          <option value="warning">Advertencia</option>
-          <option value="restarting">Reiniciando</option>
-        </select>
-      </div>
+      {server && (
+        <div>
+          <label htmlFor="status" className="block text-sm font-medium text-gray-700">
+            Estado
+          </label>
+          <select
+            id="status"
+            name="status"
+            value={formData.status}
+            onChange={handleChange}
+            disabled={isSubmitting}
+            className="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 focus:border-sky-500 focus:ring-sky-500 sm:text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
+          >
+            <option value="online">En línea</option>
+            <option value="offline">Desconectado</option>
+            <option value="maintenance">Mantenimiento</option>
+            <option value="warning">Advertencia</option>
+            <option value="restarting">Reiniciando</option>
+          </select>
+        </div>
+      )}
 
-      <div className="mt-6 flex justify-end space-x-3">
-        <Button type="button" variant="outline" onClick={onCancel}>
-          Cancelar
-        </Button>
-        <Button type="submit">{server ? "Actualizar" : "Añadir"} Servidor</Button>
+      <div className="mt-6 border-t border-gray-200 pt-4">
+        <p className="text-sm text-gray-500 mb-4">* Campos requeridos para el registro en el servidor</p>
+        <div className="flex justify-end space-x-3">
+          <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting}>
+            Cancelar
+          </Button>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <div className="flex items-center">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                {server ? "Actualizando..." : "Añadiendo..."}
+              </div>
+            ) : (
+              `${server ? "Actualizar" : "Añadir"} Servidor`
+            )}
+          </Button>
+        </div>
       </div>
     </form>
   )

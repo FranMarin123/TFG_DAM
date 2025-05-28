@@ -1,4 +1,4 @@
-import { API_CONFIG } from "../config/api"
+import { apiClient } from "../config/api"
 
 export interface LoginRequest {
   email: string
@@ -21,55 +21,17 @@ export interface AuthResponse {
 }
 
 class AuthService {
-  private getAuthHeaders() {
-    return {
-      "Content-Type": "application/json",
-    }
-  }
-
-  private async handleAuthResponse(response: Response): Promise<AuthResponse> {
-    if (!response.ok) {
-      let errorMessage = `Error ${response.status}: ${response.statusText}`
-
-      try {
-        const errorData = await response.json()
-        errorMessage = errorData.message || errorMessage
-      } catch {
-      }
-
-      throw new Error(errorMessage)
-    }
-
-    const responseText = await response.text()
-
-    try {
-      const jsonData = JSON.parse(responseText)
-
-      if (jsonData.token) {
-        return jsonData
-      }
-
-      return { token: jsonData }
-    } catch {
-      return { token: responseText }
-    }
-  }
-
   async login(credentials: LoginRequest): Promise<AuthResponse> {
     try {
-      const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.LOGIN}`, {
-        method: "POST",
-        headers: this.getAuthHeaders(),
-        body: JSON.stringify(credentials),
-      })
+      console.log("Attempting login with:", credentials)
+      const response = await apiClient.login(credentials)
+      console.log("Login response:", response)
 
-      const authResponse = await this.handleAuthResponse(response)
-
-      if (authResponse.token) {
-        this.setToken(authResponse.token)
+      if (response.token) {
+        this.setToken(response.token)
       }
 
-      return authResponse
+      return response
     } catch (error) {
       console.error("Login error:", error)
       throw error
@@ -78,19 +40,15 @@ class AuthService {
 
   async register(userData: RegisterRequest): Promise<AuthResponse> {
     try {
-      const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.REGISTER}`, {
-        method: "POST",
-        headers: this.getAuthHeaders(),
-        body: JSON.stringify(userData),
-      })
+      console.log("Attempting registration with:", userData)
+      const response = await apiClient.register(userData)
+      console.log("Registration response:", response)
 
-      const authResponse = await this.handleAuthResponse(response)
-
-      if (authResponse.token) {
-        this.setToken(authResponse.token)
+      if (response.token) {
+        this.setToken(response.token)
       }
 
-      return authResponse
+      return response
     } catch (error) {
       console.error("Register error:", error)
       throw error
