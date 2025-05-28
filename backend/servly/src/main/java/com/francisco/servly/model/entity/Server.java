@@ -37,7 +37,6 @@ public class Server {
     private List<Report> reports;
 
     public Server(String name, String address, int port, String type) {
-        this.id = -1;
         this.name = name;
         this.address = address;
         this.port = port;

@@ -1,7 +1,10 @@
 package com.francisco.servly.controller;
 
+import com.francisco.servly.model.dto.ServerPostDto;
 import com.francisco.servly.model.entity.Server;
+import com.francisco.servly.model.entity.User;
 import com.francisco.servly.services.interfaces.IServerService;
+import com.francisco.servly.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +18,10 @@ public class ServerController {
     @Autowired
     private IServerService serverService;
 
+    @Autowired
+    private IUserService userService;
+
+
     @GetMapping
     public List<Server> getAll() {
         return serverService.getAll();
@@ -26,8 +33,11 @@ public class ServerController {
     }
 
     @PostMapping
-    public Server save(@RequestBody Server server) {
-        return serverService.save(server);
+    public Server save(@RequestBody ServerPostDto server) {
+        Server serverToSave = new Server(server.getName(), server.getAddress(), 22, server.getType());
+        User user=userService.getByToken(server.getToken());
+        serverToSave.getUsers().add(user);
+        return serverService.save(serverToSave);
     }
 
     @DeleteMapping("/{id}")

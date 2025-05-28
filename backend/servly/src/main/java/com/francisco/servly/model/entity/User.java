@@ -22,7 +22,6 @@ public class User {
     private List<Server> servers;
 
     public User(String name, String email, String password) {
-        this.id= -1;
         this.name = name;
         this.email = email;
         this.password = password;
