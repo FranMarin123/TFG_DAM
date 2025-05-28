@@ -1,6 +1,6 @@
 package com.francisco.servly.services.implement;
 
-import com.francisco.servly.model.Script;
+import com.francisco.servly.model.entity.Script;
 import com.francisco.servly.repository.ScriptRepository;
 import com.francisco.servly.services.interfaces.IScriptService;
 import org.springframework.beans.factory.annotation.Autowired;

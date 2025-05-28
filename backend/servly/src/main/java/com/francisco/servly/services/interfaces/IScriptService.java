@@ -1,6 +1,6 @@
 package com.francisco.servly.services.interfaces;
 
-import com.francisco.servly.model.Script;
+import com.francisco.servly.model.entity.Script;
 
 import java.util.List;
 import java.util.Optional;

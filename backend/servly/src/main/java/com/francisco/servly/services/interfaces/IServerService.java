@@ -1,6 +1,6 @@
 package com.francisco.servly.services.interfaces;
 
-import com.francisco.servly.model.Server;
+import com.francisco.servly.model.entity.Server;
 
 import java.util.List;
 import java.util.Optional;

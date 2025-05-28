@@ -1,6 +1,6 @@
 package com.francisco.servly.controller;
 
-import com.francisco.servly.model.Script;
+import com.francisco.servly.model.entity.Script;
 import com.francisco.servly.services.interfaces.IScriptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
