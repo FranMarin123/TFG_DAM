@@ -99,4 +99,16 @@ public class UserController {
         return ResponseEntity.ok(token);
     }
 
+    @GetMapping("/{token}/servers")
+    public ResponseEntity<?> getServers(@PathVariable String token) {
+        User user = userService.getByToken(token);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Usuario no encontrado");
+        }
+        if (user.getServers()==null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error al obtener los servidores");
+        }
+        return ResponseEntity.ok(user.getServers());
+    }
+
 }
