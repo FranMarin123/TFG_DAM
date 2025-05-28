@@ -2,7 +2,8 @@ import type React from "react"
 
 import { useState } from "react"
 import { FiUser, FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { authService, type RegisterRequest } from "../../services/auth.service"
 
 interface RegisterFormData {
   name: string
@@ -23,6 +24,9 @@ export function RegisterForm() {
     acceptTerms: false,
   })
   const [errors, setErrors] = useState<Partial<RegisterFormData>>({})
+  const [isLoading, setIsLoading] = useState(false)
+  const [apiError, setApiError] = useState<string | null>(null)
+  const navigate = useNavigate()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target
@@ -31,12 +35,15 @@ export function RegisterForm() {
       [name]: type === "checkbox" ? checked : value,
     }))
 
-    // Clear error when field is edited
     if (errors[name as keyof typeof errors]) {
       setErrors((prev) => ({
         ...prev,
         [name]: undefined,
       }))
+    }
+
+    if (apiError) {
+      setApiError(null)
     }
   }
 
@@ -71,18 +78,61 @@ export function RegisterForm() {
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (validate()) {
-      console.log("Register data:", formData)
-      // Add your registration logic here
+    if (!validate()) {
+      return
+    }
+
+    setIsLoading(true)
+    setApiError(null)
+
+    try {
+      const registerData: RegisterRequest = {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      }
+
+      console.log("Attempting registration with:", registerData)
+      const response = await authService.register(registerData)
+      console.log("Registration successful:", response)
+
+      navigate("/")
+    } catch (error) {
+      console.error("Registration failed:", error)
+
+      let errorMessage = "Error al crear la cuenta. Inténtalo de nuevo."
+
+      if (error instanceof Error) {
+        if (error.message.includes("409") || error.message.includes("conflict")) {
+          errorMessage = "Este email ya está registrado. Intenta con otro email."
+        } else if (error.message.includes("400")) {
+          errorMessage = "Datos inválidos. Verifica la información ingresada."
+        } else if (error.message.includes("404")) {
+          errorMessage = "Servicio no disponible. Inténtalo más tarde."
+        } else if (error.message.includes("Failed to fetch")) {
+          errorMessage = "No se puede conectar al servidor. Verifica tu conexión."
+        } else {
+          errorMessage = error.message
+        }
+      }
+
+      setApiError(errorMessage)
+    } finally {
+      setIsLoading(false)
     }
   }
 
   return (
     <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-      {/* Name Field */}
+      {apiError && (
+        <div className="rounded-md bg-red-50 p-4">
+          <div className="text-sm text-red-700">{apiError}</div>
+        </div>
+      )}
+
       <div className="mb-4">
         <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
           Nombre completo
@@ -99,16 +149,16 @@ export function RegisterForm() {
             required
             value={formData.name}
             onChange={handleChange}
+            disabled={isLoading}
             className={`appearance-none relative block w-full px-3 py-3 pl-10 border ${
               errors.name ? "border-red-500" : "border-gray-300"
-            } placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-sky-500 focus:border-sky-500 focus:z-10 sm:text-sm`}
+            } placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-sky-500 focus:border-sky-500 focus:z-10 sm:text-sm disabled:bg-gray-100 disabled:cursor-not-allowed`}
             placeholder="Nombre completo"
           />
         </div>
         {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
       </div>
 
-      {/* Email Field */}
       <div className="mb-4">
         <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
           Email
@@ -125,16 +175,16 @@ export function RegisterForm() {
             required
             value={formData.email}
             onChange={handleChange}
+            disabled={isLoading}
             className={`appearance-none relative block w-full px-3 py-3 pl-10 border ${
               errors.email ? "border-red-500" : "border-gray-300"
-            } placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-sky-500 focus:border-sky-500 focus:z-10 sm:text-sm`}
+            } placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-sky-500 focus:border-sky-500 focus:z-10 sm:text-sm disabled:bg-gray-100 disabled:cursor-not-allowed`}
             placeholder="Correo electrónico"
           />
         </div>
         {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
       </div>
 
-      {/* Password Field */}
       <div className="mb-4">
         <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
           Contraseña
@@ -151,9 +201,10 @@ export function RegisterForm() {
             required
             value={formData.password}
             onChange={handleChange}
+            disabled={isLoading}
             className={`appearance-none relative block w-full px-3 py-3 pl-10 border ${
               errors.password ? "border-red-500" : "border-gray-300"
-            } placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-sky-500 focus:border-sky-500 focus:z-10 sm:text-sm`}
+            } placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-sky-500 focus:border-sky-500 focus:z-10 sm:text-sm disabled:bg-gray-100 disabled:cursor-not-allowed`}
             placeholder="Contraseña"
           />
           <div
@@ -171,7 +222,6 @@ export function RegisterForm() {
         <p className="mt-1 text-xs text-gray-500">La contraseña debe tener al menos 8 caracteres</p>
       </div>
 
-      {/* Confirm Password Field */}
       <div className="mb-4">
         <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
           Confirmar contraseña
@@ -188,9 +238,10 @@ export function RegisterForm() {
             required
             value={formData.confirmPassword}
             onChange={handleChange}
+            disabled={isLoading}
             className={`appearance-none relative block w-full px-3 py-3 pl-10 border ${
               errors.confirmPassword ? "border-red-500" : "border-gray-300"
-            } placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-sky-500 focus:border-sky-500 focus:z-10 sm:text-sm`}
+            } placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-sky-500 focus:border-sky-500 focus:z-10 sm:text-sm disabled:bg-gray-100 disabled:cursor-not-allowed`}
             placeholder="Confirmar contraseña"
           />
           <div
@@ -207,7 +258,6 @@ export function RegisterForm() {
         {errors.confirmPassword && <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>}
       </div>
 
-      {/* Terms and Conditions */}
       <div className="flex items-start">
         <div className="flex items-center h-5">
           <input
@@ -216,7 +266,8 @@ export function RegisterForm() {
             type="checkbox"
             checked={formData.acceptTerms}
             onChange={handleChange}
-            className={`h-4 w-4 text-sky-600 focus:ring-sky-500 border-gray-300 rounded ${
+            disabled={isLoading}
+            className={`h-4 w-4 text-sky-600 focus:ring-sky-500 border-gray-300 rounded disabled:cursor-not-allowed ${
               errors.acceptTerms ? "border-red-500" : ""
             }`}
           />
@@ -238,9 +289,17 @@ export function RegisterForm() {
 
       <button
         type="submit"
-        className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 transition-colors duration-200"
+        disabled={isLoading}
+        className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
       >
-        Crear cuenta
+        {isLoading ? (
+          <div className="flex items-center">
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+            Creando cuenta...
+          </div>
+        ) : (
+          "Crear cuenta"
+        )}
       </button>
     </form>
   )

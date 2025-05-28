@@ -1,6 +1,6 @@
 package com.francisco.servly.services.implement;
 
-import com.francisco.servly.model.Report;
+import com.francisco.servly.model.entity.Report;
 import com.francisco.servly.repository.ReportRepository;
 import com.francisco.servly.services.interfaces.IReportService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package com.francisco.servly.services.implement;
 
-import com.francisco.servly.model.Server;
+import com.francisco.servly.model.entity.Server;
 import com.francisco.servly.repository.ServerRepository;
 import com.francisco.servly.services.interfaces.IServerService;
 import org.springframework.beans.factory.annotation.Autowired;

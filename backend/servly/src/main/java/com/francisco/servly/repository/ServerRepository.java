@@ -1,6 +1,6 @@
 package com.francisco.servly.repository;
 
-import com.francisco.servly.model.Server;
+import com.francisco.servly.model.entity.Server;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

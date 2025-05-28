@@ -1,4 +1,4 @@
-package com.francisco.servly.model;
+package com.francisco.servly.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
