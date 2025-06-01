@@ -10,4 +10,5 @@ public interface IScriptService {
     Optional<Script> getById(int id);
     Script save(Script script);
     void delete(int id);
+    Script getByContentAndServer(String content, int serverId);
 }

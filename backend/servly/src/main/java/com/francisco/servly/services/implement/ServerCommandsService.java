@@ -1,5 +1,6 @@
 package com.francisco.servly.services.implement;
 
+import com.francisco.servly.model.dto.MetricsDto;
 import com.jcraft.jsch.*;
 import org.springframework.stereotype.Service;
 
@@ -43,19 +44,25 @@ public class ServerCommandsService {
         executeCommand(ip, username, password, "sudo shutdown now");
     }
 
-    public Map<String, Double> getServerMetrics(String ip, String username, String password) throws Exception {
-        Map<String, Double> metrics = new HashMap<>();
-        Session session = getSession(ip, username, password);
-        session.connect();
+    public MetricsDto getServerMetrics(String ip, String username, String password) throws Exception {
+        Session session = null;
+        try {
+            session = getSession(ip, username, password);
+            session.connect();
 
-        metrics.put("cpu", getCpuUsage(session));
-        metrics.put("ram", getRamUsage(session));
-        metrics.put("disk", getDiskUsage(session));
-        metrics.put("net_download", getNetRxMBps(session));
-
-        session.disconnect();
-        return metrics;
+            return new MetricsDto(
+                    getCpuUsage(session),
+                    getRamUsage(session),
+                    getDiskUsage(session),
+                    getNetRxMBps(session)
+            );
+        } finally {
+            if (session != null && session.isConnected()) {
+                session.disconnect();
+            }
+        }
     }
+
 
     public Session getSession(String ip, String username, String password) throws JSchException {
         JSch jsch = new JSch();
@@ -97,12 +104,18 @@ public class ServerCommandsService {
     }
 
     public double getCpuUsage(Session session) throws Exception {
-        String output = execCommand(session, "top -bn1 | grep 'Cpu(s)'");
+        String output = execCommand(session, "LANG=C top -bn1 | grep 'Cpu(s)'");
         String[] parts = output.split(",");
         for (String part : parts) {
             if (part.contains("id")) {
-                double idle = Double.parseDouble(part.trim().split(" ")[0]);
-                return 100.0 - idle;
+                String[] tokens = part.trim().split("\\s+");
+                for (int i = 0; i < tokens.length; i++) {
+                    if (tokens[i].equals("id")) {
+                        double idle = Double.parseDouble(tokens[i - 1]);
+                        double usage = 100.0 - idle;
+                        return Math.round(usage * 100.0) / 100.0;
+                    }
+                }
             }
         }
         return -1;
@@ -116,21 +129,22 @@ public class ServerCommandsService {
                 String[] parts = line.trim().split("\\s+");
                 double total = Double.parseDouble(parts[1]);
                 double used = Double.parseDouble(parts[2]);
-                return (used / total) * 100.0;
+                double usage = (used / total) * 100.0;
+                return Math.round(usage * 100.0) / 100.0;
             }
         }
         return -1;
     }
 
     public double getDiskUsage(Session session) throws Exception {
-        String output = execCommand(session, "df -h / | tail -1");
-        String[] parts = output.trim().split("\\s+");
-        return Double.parseDouble(parts[4].replace("%", ""));
+        String output = execCommand(session, "df --output=pcent / | tail -1");
+        double usage = Double.parseDouble(output.trim().replace("%", ""));
+        return Math.round(usage * 100.0) / 100.0;
     }
 
     public long getRxBytes(Session session) throws Exception {
         String output = execCommand(session,
-                "cat /proc/net/dev | grep ':' | grep -v lo | awk '{print $2}' | paste -sd+ - | bc");
+                "cat /proc/net/dev | grep ':' | grep -v lo | awk '{sum += $2} END {print sum}'");
         return Long.parseLong(output.trim());
     }
 
@@ -138,6 +152,7 @@ public class ServerCommandsService {
         long before = getRxBytes(session);
         Thread.sleep(1000);
         long after = getRxBytes(session);
-        return (after - before) / (1024.0 * 1024.0); // MB/s
+        double rate = (after - before) / (1024.0 * 1024.0);
+        return Math.round(rate * 100.0) / 100.0;
     }
 }
