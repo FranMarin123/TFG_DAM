@@ -34,4 +34,8 @@ public class ServerService implements IServerService {
     public void delete(int id) {
         serverRepository.deleteById(id);
     }
+
+    public Optional<Server> getByIP(String ipToBrowse){
+        return serverRepository.findByAddress(ipToBrowse);
+    }
 }

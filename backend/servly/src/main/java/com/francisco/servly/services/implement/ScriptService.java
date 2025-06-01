@@ -34,4 +34,8 @@ public class ScriptService implements IScriptService {
     public void delete(int id) {
         scriptRepository.deleteById(id);
     }
+
+    public Script getByContentAndServer(String content, int serverId) {
+        return scriptRepository.findByContentAndServer_Id(content, serverId);
+    }
 }

@@ -10,4 +10,5 @@ public interface IServerService {
     Optional<Server> getById(int id);
     Server save(Server server);
     void delete(int id);
+    Optional<Server> getByIP(String ipToBrowse);
 }

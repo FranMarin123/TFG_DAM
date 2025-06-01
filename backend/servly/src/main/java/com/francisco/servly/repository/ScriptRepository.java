@@ -11,4 +11,6 @@ public interface ScriptRepository extends JpaRepository<Script, Integer> {
     List<Script> findByServerId(int serverId);
 
     List<Script> findByTitleAndServerId(String title, int serverId);
+
+    Script findByContentAndServer_Id(String content, int serverId);
 }

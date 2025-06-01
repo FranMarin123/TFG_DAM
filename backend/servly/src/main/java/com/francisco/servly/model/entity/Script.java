@@ -33,6 +33,12 @@ public class Script {
         this.server = server;
     }
 
+    public Script(String title, String content, Server server) {
+        this.title = title;
+        this.content = content;
+        this.server = server;
+    }
+
     public Script() {
 
     }
