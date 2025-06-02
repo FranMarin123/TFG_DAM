@@ -24,14 +24,30 @@ export default function ImagesCollection() {
     ];
 
     const itemTemplate = (item: any) => {
-        return <img src={item} style={{ width: '100%' }} />
-    }
+        return (
+            <img 
+                src={item} 
+                alt="gallery item"
+                style={{ 
+                    width: '100%', 
+                    height: '400px', 
+                    objectFit: 'cover' 
+                }} 
+            />
+        );
+    };
 
     return (
         <div className="card">
-            <Galleria value={images} responsiveOptions={responsiveOptions} style={{ width: '640px', height: '600px' }} 
-                item={itemTemplate} circular autoPlay transitionInterval={2000} />
+            <Galleria 
+                value={images} 
+                responsiveOptions={responsiveOptions} 
+                style={{ width: '640px' }}
+                item={itemTemplate} 
+                circular 
+                autoPlay 
+                transitionInterval={2000} 
+            />
         </div>
-    )
+    );
 }
-        
