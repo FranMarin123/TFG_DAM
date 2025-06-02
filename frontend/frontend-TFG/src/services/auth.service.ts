@@ -22,37 +22,19 @@ export interface AuthResponse {
 
 class AuthService {
   async login(credentials: LoginRequest): Promise<AuthResponse> {
-    try {
-      console.log("Attempting login with:", credentials)
-      const response = await apiClient.login(credentials)
-      console.log("Login response:", response)
-
-      if (response.token) {
-        this.setToken(response.token)
-      }
-
-      return response
-    } catch (error) {
-      console.error("Login error:", error)
-      throw error
+    const response = await apiClient.login(credentials)
+    if (response.token) {
+      this.setToken(response.token)
     }
+    return response
   }
 
   async register(userData: RegisterRequest): Promise<AuthResponse> {
-    try {
-      console.log("Attempting registration with:", userData)
-      const response = await apiClient.register(userData)
-      console.log("Registration response:", response)
-
-      if (response.token) {
-        this.setToken(response.token)
-      }
-
-      return response
-    } catch (error) {
-      console.error("Register error:", error)
-      throw error
+    const response = await apiClient.register(userData)
+    if (response.token) {
+      this.setToken(response.token)
     }
+    return response
   }
 
   setToken(token: string): void {
@@ -77,12 +59,10 @@ class AuthService {
       if (parts.length !== 3) return false
 
       const payload = JSON.parse(atob(parts[1]))
-
       if (payload.exp && payload.exp * 1000 < Date.now()) {
         this.removeToken()
         return false
       }
-
       return true
     } catch {
       this.removeToken()
@@ -93,21 +73,6 @@ class AuthService {
   logout(): void {
     this.removeToken()
     window.location.href = "/login"
-  }
-
-  getUserFromToken(): any {
-    const token = this.getToken()
-    if (!token) return null
-
-    try {
-      const parts = token.split(".")
-      if (parts.length !== 3) return null
-
-      const payload = JSON.parse(atob(parts[1]))
-      return payload
-    } catch {
-      return null
-    }
   }
 }
 
