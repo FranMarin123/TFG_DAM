@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { FiMenu, FiX, FiServer, FiShield, FiActivity, FiSettings, FiLogOut } from "react-icons/fi"
+import { FiMenu, FiX, FiServer, FiLogOut, FiGlobe } from "react-icons/fi"
 import { useAuth } from "../../hooks/useAuth"
 
 export function Header() {
@@ -17,7 +17,6 @@ export function Header() {
     <header className="bg-white shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20 items-center">
-          {/* Logo and Brand */}
           <div className="flex-shrink-0 flex items-center">
             <Link to="/" className="flex items-center space-x-3">
               <div className="h-10 w-10 bg-sky-600 rounded-md flex items-center justify-center text-white">
@@ -29,21 +28,14 @@ export function Header() {
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             {isAuthenticated ? (
               <>
                 <Link to="/servers" className="text-gray-700 hover:text-sky-600 font-medium flex items-center">
                   <FiServer className="mr-2" /> Servidores
                 </Link>
-                <Link to="/monitoring" className="text-gray-700 hover:text-sky-600 font-medium flex items-center">
-                  <FiActivity className="mr-2" /> Monitoreo
-                </Link>
-                <Link to="/security" className="text-gray-700 hover:text-sky-600 font-medium flex items-center">
-                  <FiShield className="mr-2" /> Seguridad
-                </Link>
-                <Link to="/settings" className="text-gray-700 hover:text-sky-600 font-medium flex items-center">
-                  <FiSettings className="mr-2" /> Configuración
+                <Link to="/about" className="text-gray-700 hover:text-sky-600 font-medium flex items-center">
+                  <FiGlobe className="mr-2" /> Sobre Nosotros
                 </Link>
               </>
             ) : (
@@ -58,7 +50,6 @@ export function Header() {
             )}
           </nav>
 
-          {/* Desktop Auth Buttons */}
           <div className="hidden md:flex items-center space-x-4">
             {isAuthenticated ? (
               <button
@@ -84,7 +75,6 @@ export function Header() {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button
               type="button"
@@ -97,7 +87,6 @@ export function Header() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="md:hidden bg-white border-t border-gray-200 py-2">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-1 py-3">
@@ -111,25 +100,11 @@ export function Header() {
                   <FiServer className="mr-2" /> Servidores
                 </Link>
                 <Link
-                  to="/monitoring"
+                  to="/about"
                   className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50 flex items-center"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  <FiActivity className="mr-2" /> Monitoreo
-                </Link>
-                <Link
-                  to="/security"
-                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50 flex items-center"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <FiShield className="mr-2" /> Seguridad
-                </Link>
-                <Link
-                  to="/settings"
-                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-sky-600 hover:bg-gray-50 flex items-center"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <FiSettings className="mr-2" /> Configuración
+                  <FiGlobe className="mr-2" /> Sobre nosotros
                 </Link>
                 <div className="pt-4 pb-2 border-t border-gray-200">
                   <button

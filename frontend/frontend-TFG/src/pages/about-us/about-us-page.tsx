@@ -162,35 +162,7 @@ export default function AboutUsPage() {
                     Francisco lidera la visión estratégica de Servly.
                   </p>
                 </div>
-              </div>
-              <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-                <img
-                  className="w-full h-64 object-cover"
-                  src="/placeholder.svg?height=300&width=300"
-                  alt="Juan Serrano"
-                />
-                <div className="p-6">
-                  <h3 className="text-lg font-bold text-gray-900">Juan Serrano Castro</h3>
-                  <p className="text-sky-600">Alumno en prácticas de DAM</p>
-                  <p className="mt-3 text-gray-500">
-                    Juan es el futuro y presente de esta compañía, brilla por si solo.
-                  </p>
-                </div>
-              </div>
-              <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-                <img
-                  className="w-full h-64 object-cover"
-                  src="/placeholder.svg?height=300&width=300"
-                  alt="Aida Gomez"
-                />
-                <div className="p-6">
-                  <h3 className="text-lg font-bold text-gray-900">Aida Gómez Gómez</h3>
-                  <p className="text-sky-600">Responsable de diseño gráfico y marketing</p>
-                  <p className="mt-3 text-gray-500">
-                    Aida es la encargada de realizar todas las funciones de diseño dentro de la aplicación, además de ser la responsable de nuestras más que conocidas campañas de marketing. 
-                  </p>
-                </div>
-              </div>
+              </div>            
             </div>
           </div>
         </section>
