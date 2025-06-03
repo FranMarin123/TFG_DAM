@@ -3,10 +3,10 @@ name: Deploy App
 on:
   push:
     branches:
-      - main
+      - deploy_feature_DespliegueDelProyecto
   pull_request:
     branches:
-      - main
+      - deploy_feature_DespliegueDelProyecto
 
 jobs:
   deploy:
