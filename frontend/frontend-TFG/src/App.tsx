@@ -1,34 +1,29 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import HomePage from "./pages/home/home-page"
+import LoginPage from "./pages/auth/login/login-page"
+import RegisterPage from "./pages/auth/register/register-page"
+import PrivacyPolicyPage from "./pages/legal/privacy-policy-page"
+import TermsOfServicePage from "./pages/legal/terms-of-service-page"
+import CookiePolicyPage from "./pages/legal/cookie-policy-page"
+import AboutUsPage from "./pages/about-us/about-us-page"
+import ServersPage from "./pages/server/servers-page"
+import ServerDetailPage from "./pages/server/server-detail-page"
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/privacy" element={<PrivacyPolicyPage />} />
+        <Route path="/terms" element={<TermsOfServicePage />} />
+        <Route path="/cookies" element={<CookiePolicyPage />} />
+        <Route path="/about" element={<AboutUsPage />} />
+        <Route path="/servers" element={<ServersPage />} />
+        <Route path="/servers/:id" element={<ServerDetailPage />} />
+      </Routes>
+    </Router>
   )
 }
 
