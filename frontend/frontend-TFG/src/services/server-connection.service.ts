@@ -1,4 +1,4 @@
-import { apiClient, type ServerCredentials } from "../config/api"
+import { apiClient, type ServerCredentials } from "../hooks/api"
 
 export interface ServerConnection {
   serverId: string
@@ -35,14 +35,12 @@ class ServerConnectionService {
     }
 
     try {
-      // Verificar conexión con la API
       console.log(`[ServerConnectionService] Verificando conexión con API...`)
       const isConnected = await apiClient.checkConnection(credentials)
 
       if (isConnected) {
-        console.log(`[ServerConnectionService] ✅ Conexión exitosa`)
+        console.log(`[ServerConnectionService] Conexión exitosa`)
 
-        // Almacenar la conexión
         const connection: ServerConnection = {
           serverId,
           serverIP,
@@ -191,11 +189,11 @@ class ServerConnectionService {
       if (isConnected) {
         connection.connectedAt = new Date()
         connection.isActive = true
-        console.log(`[ServerConnectionService] ✅ Conexión renovada exitosamente para "${serverId}"`)
+        console.log(`[ServerConnectionService] Conexión renovada exitosamente para "${serverId}"`)
         return true
       } else {
         connection.isActive = false
-        console.log(`[ServerConnectionService] ❌ Falló la renovación de conexión para "${serverId}"`)
+        console.log(`[ServerConnectionService] Falló la renovación de conexión para "${serverId}"`)
         return false
       }
     } catch (error) {

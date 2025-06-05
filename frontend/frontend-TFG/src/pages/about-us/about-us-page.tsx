@@ -38,10 +38,10 @@ export default function AboutUsPage() {
                   de empresas en todo el mundo, desde startups hasta grandes corporaciones.
                 </p>
               </div>
-              <div className="mt-10 lg:mt-0">
+              <div className="mt-10 lg:mt-0" >
                 <img
-                  className="rounded-xl shadow-xl"
-                  src="/placeholder.svg?height=400&width=500"
+                  className="ml-auto rounded-xl shadow-xl"
+                  src="/LogoServly.jpeg"
                   alt="Equipo de Servly"
                 />
               </div>

@@ -1,4 +1,4 @@
-import { apiClient } from "../config/api"
+import { apiClient } from "../hooks/api"
 import { authService } from "./auth.service"
 import { serverConnectionService } from "./server-connection.service"
 
@@ -85,7 +85,6 @@ class ServerService {
     }
   }
 
-  // Operaciones que requieren conexión SSH/RDP - ahora usando el singleton
   async connectToServer(serverId: string, serverIP: string, username: string, password: string): Promise<boolean> {
     console.log(`[ServerService] Delegando conexión al singleton para servidor "${serverId}"`)
     return await serverConnectionService.connectToServer(serverId, serverIP, username, password)
@@ -166,12 +165,10 @@ class ServerService {
     serverConnectionService.disconnectAll()
   }
 
-  // Método de debug público
   debugCredentials(): void {
     serverConnectionService.debugConnections()
   }
 
-  // Nuevos métodos para aprovechar el singleton
   getActiveConnections() {
     return serverConnectionService.getActiveConnections()
   }

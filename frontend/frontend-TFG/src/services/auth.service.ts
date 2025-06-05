@@ -1,4 +1,4 @@
-import { apiClient } from "../config/api"
+import { apiClient } from "../hooks/api"
 
 export interface LoginRequest {
   email: string

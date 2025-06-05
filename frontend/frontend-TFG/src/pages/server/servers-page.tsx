@@ -180,15 +180,12 @@ export default function ServersPage() {
 
       <Footer />
 
-      {/* Add Server Modal */}
       <Modals isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} title="Añadir Servidor">
         <ServerForm onSubmit={handleAddServer} onCancel={() => setIsAddModalOpen(false)} />
       </Modals>
 
-      {/* Error Modal */}
       <ErrorModal isOpen={isErrorModalOpen} onClose={() => setIsErrorModalOpen(false)} message={error || ""} />
 
-      {/* Restart Confirmation Dialog */}
       <ConfirmationDialog
         isOpen={isRestartDialogOpen}
         onClose={() => setIsRestartDialogOpen(false)}

@@ -70,9 +70,7 @@ export function RegisterForm() {
       newErrors.confirmPassword = "Las contraseñas no coinciden"
     }
 
-    if (!formData.acceptTerms) {
-      newErrors.acceptTerms = "Debes aceptar los términos y condiciones"
-    }
+    
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
