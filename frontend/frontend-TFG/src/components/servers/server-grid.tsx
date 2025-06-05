@@ -20,7 +20,6 @@ export function ServerGrid({ servers, onRestart }: ServerGridProps) {
   const navigate = useNavigate()
 
   const handleCardClick = (e: React.MouseEvent, serverId: string) => {
-    // Evitar navegación si se hace clic en un botón
     if ((e.target as HTMLElement).closest("button")) {
       return
     }
